@@ -12,12 +12,12 @@
 
 ## 3. Implementación
 
-- [ ] 3.1 Esquemas zod de crear y modificar (verificación: T-CREAR-2, T-CREAR-3, T-CREAR-4 y T-EDITAR-3 en verde)
-- [ ] 3.2 Repositorio SQL y servicio (verificación: T-LISTAR-*, T-VER-*, T-BORRAR-* en verde)
-- [ ] 3.3 Rutas `/api/tareas` (verificación: todos los tests en verde)
-- [ ] 3.4 Página web mínima en `public/index.html` (verificación: crear, cambiar estado y borrar desde el navegador)
-- [ ] 3.5 Contrato `openapi.yaml` con los cinco endpoints
+- [x] 3.1 Esquemas zod de crear y modificar (verificación: T-CREAR-2, T-CREAR-3, T-CREAR-4 y T-EDITAR-3 en verde)
+- [x] 3.2 Repositorio SQL y servicio (verificación: T-LISTAR-*, T-VER-*, T-BORRAR-* en verde)
+- [x] 3.3 Rutas `/api/tareas` (verificación: todos los tests en verde)
+- [x] 3.4 Página web mínima en `public/index.html` (verificación: crear, cambiar estado y borrar desde el navegador)
+- [x] 3.5 Contrato `openapi.yaml` con los cinco endpoints
 
 ## 4. Cierre
 
-- [ ] 4.1 `npm run check` en verde
+- [x] 4.1 `npm run check` en verde

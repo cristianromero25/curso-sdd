@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tareas del equipo de soporte</title>
+    <style>
+      :root {
+        --borde: #d0d7de;
+        --texto: #1f2328;
+        --suave: #59636e;
+        --acento: #0969da;
+        --error: #cf222e;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: system-ui, sans-serif;
+        color: var(--texto);
+        max-width: 760px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+      }
+      h1 {
+        font-size: 1.5rem;
+      }
+      form {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+      }
+      input,
+      select,
+      button {
+        font: inherit;
+        padding: 0.45rem 0.6rem;
+        border: 1px solid var(--borde);
+        border-radius: 6px;
+      }
+      input[name='titulo'] {
+        flex: 1;
+      }
+      button {
+        background: var(--acento);
+        color: #fff;
+        border-color: var(--acento);
+        cursor: pointer;
+      }
+      button.secundario {
+        background: #fff;
+        color: var(--error);
+        border-color: var(--borde);
+      }
+      ul {
+        list-style: none;
+        padding: 0;
+      }
+      li {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.6rem 0;
+        border-bottom: 1px solid var(--borde);
+      }
+      li .titulo {
+        flex: 1;
+      }
+      li.hecha .titulo {
+        text-decoration: line-through;
+        color: var(--suave);
+      }
+      #error {
+        color: var(--error);
+        min-height: 1.2em;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Tareas del equipo de soporte</h1>
+    <form id="nueva">
+      <input name="titulo" placeholder="Nueva tarea" maxlength="120" required />
+      <button>Añadir</button>
+    </form>
+    <p id="error" role="alert"></p>
+    <ul id="lista"></ul>
+
+    <script>
+      const API = '/api/tareas';
+      const ESTADOS = { pendiente: 'Pendiente', en_curso: 'En curso', hecha: 'Hecha' };
+      const $ = (s) => document.querySelector(s);
+
+      async function llamar(url, opciones = {}) {
+        const res = await fetch(url, {
+          headers: { 'Content-Type': 'application/json' },
+          ...opciones,
+        });
+        if (!res.ok) {
+          const cuerpo = await res.json().catch(() => ({}));
+          throw new Error(cuerpo.detalles?.[0]?.mensaje ?? cuerpo.error ?? `Error ${res.status}`);
+        }
+        return res.status === 204 ? null : res.json();
+      }
+
+      function pintar(tareas) {
+        $('#lista').replaceChildren(
+          ...tareas.map((t) => {
+            const li = document.createElement('li');
+            li.className = t.estado;
+            const titulo = Object.assign(document.createElement('span'), {
+              className: 'titulo',
+              textContent: t.titulo,
+            });
+            const estado = document.createElement('select');
+            estado.innerHTML = Object.entries(ESTADOS)
+              .map(([v, n]) => `<option value="${v}">${n}</option>`)
+              .join('');
+            estado.value = t.estado;
+            estado.onchange = () =>
+              accion(() =>
+                llamar(`${API}/${t.id}`, {
+                  method: 'PATCH',
+                  body: JSON.stringify({ estado: estado.value }),
+                }),
+              );
+            const borrar = Object.assign(document.createElement('button'), {
+              className: 'secundario',
+              textContent: 'Borrar',
+            });
+            borrar.onclick = () => accion(() => llamar(`${API}/${t.id}`, { method: 'DELETE' }));
+            li.append(titulo, estado, borrar);
+            return li;
+          }),
+        );
+      }
+
+      async function accion(fn) {
+        $('#error').textContent = '';
+        try {
+          await fn();
+        } catch (e) {
+          $('#error').textContent = e.message;
+        }
+        pintar(await llamar(API));
+      }
+
+      $('#nueva').onsubmit = (e) => {
+        e.preventDefault();
+        const titulo = e.target.titulo.value;
+        accion(async () => {
+          await llamar(API, { method: 'POST', body: JSON.stringify({ titulo }) });
+          e.target.reset();
+        });
+      };
+
+      accion(async () => {});
+    </script>
+  </body>
+</html>

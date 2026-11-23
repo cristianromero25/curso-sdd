@@ -1,0 +1,100 @@
+openapi: 3.1.0
+info:
+  title: tareas-app
+  version: 0.1.0
+  description: >
+    API del gestor de tareas. El comportamiento está especificado en openspec/specs/tareas/spec.md;
+    este documento describe la forma del contrato (rutas, cuerpos y códigos).
+paths:
+  /api/tareas:
+    get:
+      summary: Listar las tareas (orden de creación)
+      responses:
+        '200':
+          description: Lista de tareas
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: '#/components/schemas/Tarea' } }
+    post:
+      summary: Crear una tarea
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/TareaNueva' }
+      responses:
+        '201': { description: Tarea creada, content: { application/json: { schema: { $ref: '#/components/schemas/Tarea' } } } }
+        '400': { $ref: '#/components/responses/JsonMalFormado' }
+        '422': { $ref: '#/components/responses/DatosNoValidos' }
+  /api/tareas/{id}:
+    parameters:
+      - { name: id, in: path, required: true, schema: { type: integer } }
+    get:
+      summary: Consultar una tarea
+      responses:
+        '200': { description: La tarea, content: { application/json: { schema: { $ref: '#/components/schemas/Tarea' } } } }
+        '404': { $ref: '#/components/responses/NoEncontrada' }
+    patch:
+      summary: Modificar una tarea (solo los campos enviados)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CambiosTarea' }
+      responses:
+        '200': { description: Tarea modificada, content: { application/json: { schema: { $ref: '#/components/schemas/Tarea' } } } }
+        '404': { $ref: '#/components/responses/NoEncontrada' }
+        '422': { $ref: '#/components/responses/DatosNoValidos' }
+    delete:
+      summary: Borrar una tarea (definitivo)
+      responses:
+        '204': { description: Borrada }
+        '404': { $ref: '#/components/responses/NoEncontrada' }
+components:
+  schemas:
+    Estado:
+      type: string
+      enum: [pendiente, en_curso, hecha]
+    Tarea:
+      type: object
+      required: [id, titulo, descripcion, estado, creadaEn, actualizadaEn]
+      properties:
+        id: { type: integer }
+        titulo: { type: string, minLength: 1, maxLength: 120 }
+        descripcion: { type: [string, 'null'], maxLength: 1000 }
+        estado: { $ref: '#/components/schemas/Estado' }
+        creadaEn: { type: string, format: date-time }
+        actualizadaEn: { type: string, format: date-time }
+    TareaNueva:
+      type: object
+      required: [titulo]
+      properties:
+        titulo: { type: string, minLength: 1, maxLength: 120 }
+        descripcion: { type: string, maxLength: 1000 }
+        estado: { $ref: '#/components/schemas/Estado' }
+    CambiosTarea:
+      type: object
+      properties:
+        titulo: { type: string, minLength: 1, maxLength: 120 }
+        descripcion: { type: [string, 'null'], maxLength: 1000 }
+        estado: { $ref: '#/components/schemas/Estado' }
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error: { type: string }
+        detalles:
+          type: array
+          items:
+            type: object
+            properties: { campo: { type: string }, mensaje: { type: string } }
+  responses:
+    NoEncontrada:
+      description: La tarea no existe (o el id no es un número)
+      content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+    DatosNoValidos:
+      description: Datos no válidos
+      content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+    JsonMalFormado:
+      description: El cuerpo no es JSON válido
+      content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
