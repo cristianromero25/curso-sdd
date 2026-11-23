@@ -7,8 +7,8 @@
 
 ## 2. Tests de contrato en rojo
 
-- [ ] 2.1 Un test por scenario de la spec con su id en el nombre (verificación: `npm test` falla por rutas inexistentes, no por errores de sintaxis)
-- [ ] 2.2 `npm run trazabilidad` muestra los 14 scenarios cubiertos
+- [x] 2.1 Un test por scenario de la spec con su id en el nombre (verificación: `npm test` falla por rutas inexistentes, no por errores de sintaxis)
+- [x] 2.2 `npm run trazabilidad` muestra los 14 scenarios cubiertos
 
 ## 3. Implementación
 
