@@ -6,8 +6,8 @@
 
 ## 2. Corrección
 
-- [ ] 2.1 Regla `estaVencida`: fecha límite anterior a hoy (verificación: T-VENC-1 a T-VENC-5 en verde)
-- [ ] 2.2 `npm run check` en verde
+- [x] 2.1 Regla `estaVencida`: fecha límite anterior a hoy (verificación: T-VENC-1 a T-VENC-5 en verde)
+- [x] 2.2 `npm run check` en verde
 
 ## Workflow follow-up
 

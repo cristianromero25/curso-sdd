@@ -16,14 +16,14 @@ export interface Tarea {
 }
 
 /**
- * Regla «Tarea vencida» (spec tareas): la fecha límite se ha alcanzado y no está hecha.
- * Las fechas AAAA-MM-DD se comparan como texto.
+ * Regla «Tarea vencida» (spec tareas): la fecha límite es ANTERIOR a hoy y no está hecha.
+ * Una tarea vence al terminar el día de su fecha límite (REV-002). Fechas AAAA-MM-DD comparadas como texto.
  */
 export function estaVencida(
   fila: Pick<FilaTarea, 'fecha_limite' | 'estado'>,
   hoy: string,
 ): boolean {
-  return fila.fecha_limite !== null && fila.fecha_limite <= hoy && fila.estado !== 'hecha';
+  return fila.fecha_limite !== null && fila.fecha_limite < hoy && fila.estado !== 'hecha';
 }
 
 /** Reglas de negocio de la capability `tareas`. `hoy` es el reloj inyectado (AAAA-MM-DD). */
