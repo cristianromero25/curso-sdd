@@ -1,0 +1,7 @@
+node_modules
+data
+openspec
+.claude
+.agents
+*.md
+openapi.yaml

@@ -1,0 +1,32 @@
+# CI: lo mismo que `npm run check` en local (paridad local = CI).
+# Falla si falla el typecheck, un test, la trazabilidad spec↔tests o la validación de specs.
+# Para que BLOQUEE el merge, marca el job `check` como obligatorio en la protección de la rama main (GitHub).
+# Buena práctica: fija las acciones a SHA (`uses: actions/checkout@<sha> # v4`) en un repo real.
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      OPENSPEC_TELEMETRY: '0'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run check

@@ -1,0 +1,35 @@
+schema: spec-driven
+
+# Contexto: lo lee el agente antes de generar CUALQUIER artefacto (proposal, specs, design, tasks).
+context: |
+  Language: es
+  All artifacts must be written in es.
+  Keep OpenSpec structural headings and SHALL/MUST keywords in English.
+
+  Producto: gestor de tareas del equipo de soporte de un cliente (ver docs/prd.md).
+  Stack: Node.js 22 + TypeScript + Express + SQLite (better-sqlite3) + zod. Tests: Vitest + Supertest.
+  API REST JSON bajo /api/tareas. Los errores responden JSON { error, detalles? } con mensaje en español.
+  Las fechas son de calendario (AAAA-MM-DD); "hoy" se calcula en la zona horaria APP_TZ.
+
+# Reglas por tipo de artefacto: el agente las cumple al escribir cada uno.
+rules:
+  proposal:
+    - Cita el documento de origen (docs/requerimientos/REQ-xxx o docs/revisiones/REV-xxx).
+    - Incluye siempre un apartado "Fuera de alcance" dentro de What Changes.
+  specs:
+    - 'Cada Scenario lleva un identificador entre corchetes, p. ej. "#### Scenario: [T-CREAR-1] Título válido". El test que lo comprueba lleva el mismo identificador en su nombre.'
+    - Describe comportamiento observable (peticiones y respuestas), nunca clases, archivos ni librerías.
+    - 'Cubre siempre los bordes: valores límite, valores inválidos, recurso inexistente.'
+    - Si una palabra admite dos lecturas (p. ej. "hoy", "reciente", "activa"), defínela en el propio requisito.
+  design:
+    - Para cada decisión, indica la alternativa descartada y por qué.
+  tasks:
+    - Primero los tests en rojo (uno por scenario), después la implementación.
+    - La última tarea es ejecutar npm run check.
+
+# Cómo conducir el trabajo.
+operations:
+  apply:
+    guidance:
+      - Escribe los tests del scenario antes del código y comprueba que fallan por la razón esperada.
+      - Ejecuta npm test al terminar cada grupo de tareas, no solo al final.
