@@ -70,6 +70,17 @@
         text-decoration: line-through;
         color: var(--suave);
       }
+      .fecha {
+        color: var(--suave);
+        font-size: 0.9rem;
+      }
+      .vencida {
+        background: var(--error);
+        color: #fff;
+        border-radius: 999px;
+        padding: 0.1rem 0.55rem;
+        font-size: 0.8rem;
+      }
       #error {
         color: var(--error);
         min-height: 1.2em;
@@ -80,6 +91,7 @@
     <h1>Tareas del equipo de soporte</h1>
     <form id="nueva">
       <input name="titulo" placeholder="Nueva tarea" maxlength="120" required />
+      <input name="fechaLimite" type="date" aria-label="Fecha límite (opcional)" />
       <button>Añadir</button>
     </form>
     <p id="error" role="alert"></p>
@@ -128,7 +140,19 @@
               textContent: 'Borrar',
             });
             borrar.onclick = () => accion(() => llamar(`${API}/${t.id}`, { method: 'DELETE' }));
-            li.append(titulo, estado, borrar);
+            const fecha = Object.assign(document.createElement('span'), {
+              className: 'fecha',
+              textContent: t.fechaLimite ?? '',
+            });
+            li.append(titulo);
+            if (t.vencida)
+              li.append(
+                Object.assign(document.createElement('span'), {
+                  className: 'vencida',
+                  textContent: 'Vencida',
+                }),
+              );
+            li.append(fecha, estado, borrar);
             return li;
           }),
         );
@@ -147,8 +171,9 @@
       $('#nueva').onsubmit = (e) => {
         e.preventDefault();
         const titulo = e.target.titulo.value;
+        const fechaLimite = e.target.fechaLimite.value || undefined;
         accion(async () => {
-          await llamar(API, { method: 'POST', body: JSON.stringify({ titulo }) });
+          await llamar(API, { method: 'POST', body: JSON.stringify({ titulo, fechaLimite }) });
           e.target.reset();
         });
       };

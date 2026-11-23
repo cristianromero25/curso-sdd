@@ -7,6 +7,7 @@ export interface FilaTarea {
   titulo: string;
   descripcion: string | null;
   estado: Estado;
+  fecha_limite: string | null;
   creada_en: string;
   actualizada_en: string;
 }
@@ -26,13 +27,14 @@ export function repositorioTareas(bd: BD) {
       const ahora = new Date().toISOString();
       const { lastInsertRowid } = bd
         .prepare(
-          `INSERT INTO tareas (titulo, descripcion, estado, creada_en, actualizada_en)
-           VALUES (@titulo, @descripcion, @estado, @ahora, @ahora)`,
+          `INSERT INTO tareas (titulo, descripcion, estado, fecha_limite, creada_en, actualizada_en)
+           VALUES (@titulo, @descripcion, @estado, @fechaLimite, @ahora, @ahora)`,
         )
         .run({
           titulo: datos.titulo,
           descripcion: datos.descripcion ?? null,
           estado: datos.estado ?? 'pendiente',
+          fechaLimite: datos.fechaLimite ?? null,
           ahora,
         });
       return this.buscar(Number(lastInsertRowid))!;
@@ -43,12 +45,13 @@ export function repositorioTareas(bd: BD) {
       if (!actual) return undefined;
       bd.prepare(
         `UPDATE tareas SET titulo = @titulo, descripcion = @descripcion, estado = @estado,
-                actualizada_en = @ahora WHERE id = @id`,
+                fecha_limite = @fechaLimite, actualizada_en = @ahora WHERE id = @id`,
       ).run({
         id,
         titulo: cambios.titulo ?? actual.titulo,
         descripcion: cambios.descripcion === undefined ? actual.descripcion : cambios.descripcion,
         estado: cambios.estado ?? actual.estado,
+        fechaLimite: cambios.fechaLimite === undefined ? actual.fecha_limite : cambios.fechaLimite,
         ahora: new Date().toISOString(),
       });
       return this.buscar(id);

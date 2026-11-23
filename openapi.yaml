@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: tareas-app
-  version: 0.1.0
+  version: 0.2.0
   description: >
     API del gestor de tareas. El comportamiento está especificado en openspec/specs/tareas/spec.md;
     este documento describe la forma del contrato (rutas, cuerpos y códigos).
@@ -57,12 +57,14 @@ components:
       enum: [pendiente, en_curso, hecha]
     Tarea:
       type: object
-      required: [id, titulo, descripcion, estado, creadaEn, actualizadaEn]
+      required: [id, titulo, descripcion, estado, fechaLimite, vencida, creadaEn, actualizadaEn]
       properties:
         id: { type: integer }
         titulo: { type: string, minLength: 1, maxLength: 120 }
         descripcion: { type: [string, 'null'], maxLength: 1000 }
         estado: { $ref: '#/components/schemas/Estado' }
+        fechaLimite: { type: [string, 'null'], format: date }
+        vencida: { type: boolean, description: 'Calculado. Ver Requirement "Tarea vencida" en la spec viva.' }
         creadaEn: { type: string, format: date-time }
         actualizadaEn: { type: string, format: date-time }
     TareaNueva:
@@ -72,12 +74,14 @@ components:
         titulo: { type: string, minLength: 1, maxLength: 120 }
         descripcion: { type: string, maxLength: 1000 }
         estado: { $ref: '#/components/schemas/Estado' }
+        fechaLimite: { type: string, format: date }
     CambiosTarea:
       type: object
       properties:
         titulo: { type: string, minLength: 1, maxLength: 120 }
         descripcion: { type: [string, 'null'], maxLength: 1000 }
         estado: { $ref: '#/components/schemas/Estado' }
+        fechaLimite: { type: [string, 'null'], format: date, description: 'null quita la fecha límite' }
     Error:
       type: object
       required: [error]

@@ -15,16 +15,27 @@ const estado = z.enum(ESTADOS, {
   errorMap: () => ({ message: `El estado debe ser uno de: ${ESTADOS.join(', ')}` }),
 });
 
+/** Fecha de calendario AAAA-MM-DD que existe de verdad (rechaza 2026-02-30). */
+const fechaLimite = z
+  .string()
+  .regex(/^\d{4}-\d{2}-\d{2}$/, 'La fecha límite debe tener el formato AAAA-MM-DD')
+  .refine((f) => {
+    const d = new Date(`${f}T00:00:00Z`);
+    return !Number.isNaN(d.getTime()) && d.toISOString().startsWith(f);
+  }, 'La fecha límite no es una fecha válida');
+
 export const esquemaCrear = z.object({
   titulo,
   descripcion: descripcion.optional(),
   estado: estado.optional(),
+  fechaLimite: fechaLimite.optional(),
 });
 
 export const esquemaModificar = z.object({
   titulo: titulo.optional(),
   descripcion: descripcion.nullable().optional(),
   estado: estado.optional(),
+  fechaLimite: fechaLimite.nullable().optional(),
 });
 
 export type DatosCrear = z.infer<typeof esquemaCrear>;

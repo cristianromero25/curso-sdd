@@ -9,12 +9,25 @@ export interface Tarea {
   titulo: string;
   descripcion: string | null;
   estado: Estado;
+  fechaLimite: string | null;
+  vencida: boolean;
   creadaEn: string;
   actualizadaEn: string;
 }
 
+/**
+ * Regla «Tarea vencida» (spec tareas): la fecha límite se ha alcanzado y no está hecha.
+ * Las fechas AAAA-MM-DD se comparan como texto.
+ */
+export function estaVencida(
+  fila: Pick<FilaTarea, 'fecha_limite' | 'estado'>,
+  hoy: string,
+): boolean {
+  return fila.fecha_limite !== null && fila.fecha_limite <= hoy && fila.estado !== 'hecha';
+}
+
 /** Reglas de negocio de la capability `tareas`. `hoy` es el reloj inyectado (AAAA-MM-DD). */
-export function servicioTareas(bd: BD, _hoy: () => string) {
+export function servicioTareas(bd: BD, hoy: () => string) {
   const repo = repositorioTareas(bd);
 
   const aTarea = (f: FilaTarea): Tarea => ({
@@ -22,6 +35,8 @@ export function servicioTareas(bd: BD, _hoy: () => string) {
     titulo: f.titulo,
     descripcion: f.descripcion,
     estado: f.estado,
+    fechaLimite: f.fecha_limite,
+    vencida: estaVencida(f, hoy()),
     creadaEn: f.creada_en,
     actualizadaEn: f.actualizada_en,
   });
