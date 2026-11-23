@@ -2,7 +2,7 @@
 
 ## 1. Reproducir el rechazo
 
-- [ ] 1.1 Test de contrato `[T-VENC-5]` (fecha límite = hoy → no vencida) (verificación: falla con la regla actual, `vencida: true`)
+- [x] 1.1 Test de contrato `[T-VENC-5]` (fecha límite = hoy → no vencida) (verificación: falla con la regla actual, `vencida: true`)
 
 ## 2. Corrección
 

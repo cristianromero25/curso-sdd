@@ -64,4 +64,10 @@ describe('Requirement: Tarea vencida', () => {
     const { body } = await crear({ titulo: 'A tiempo', fechaLimite: '2026-03-11' });
     expect(body.vencida).toBe(false);
   });
+
+  // REV-002 punto 1: el caso de borde que la spec no cubría.
+  it('[T-VENC-5] fecha límite hoy → todavía no vencida', async () => {
+    const { body } = await crear({ titulo: 'Enviar informe mensual', fechaLimite: HOY });
+    expect(body.vencida).toBe(false);
+  });
 });
