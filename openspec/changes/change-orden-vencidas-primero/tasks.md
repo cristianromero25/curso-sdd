@@ -6,9 +6,9 @@
 
 ## 2. Implementación
 
-- [ ] 2.1 Orden del listado en el servicio: vencidas por fecha límite ascendente, después el resto por creación (verificación: T-LISTAR-1 a T-LISTAR-3 en verde)
-- [ ] 2.2 Resumen de `GET /api/tareas` en `openapi.yaml` (verificación: revisión en el PR)
-- [ ] 2.3 `npm run check` en verde
+- [x] 2.1 Orden del listado en el servicio: vencidas por fecha límite ascendente, después el resto por creación (verificación: T-LISTAR-1 a T-LISTAR-3 en verde)
+- [x] 2.2 Resumen de `GET /api/tareas` en `openapi.yaml` (verificación: revisión en el PR)
+- [x] 2.3 `npm run check` en verde
 
 ## Workflow follow-up
 

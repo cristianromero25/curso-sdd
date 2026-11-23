@@ -48,7 +48,14 @@ export function servicioTareas(bd: BD, hoy: () => string) {
   };
 
   return {
-    listar: (): Tarea[] => repo.listar().map(aTarea),
+    /** Orden (spec «Listar las tareas»): vencidas por fecha límite ascendente; después el resto por creación. */
+    listar(): Tarea[] {
+      const tareas = repo.listar().map(aTarea); // el repositorio devuelve en orden de creación
+      const vencidas = tareas
+        .filter((t) => t.vencida)
+        .sort((a, b) => a.fechaLimite!.localeCompare(b.fechaLimite!) || a.id - b.id);
+      return [...vencidas, ...tareas.filter((t) => !t.vencida)];
+    },
     obtener: (id: number): Tarea => aTarea(obtenerFila(id)),
     crear: (datos: DatosCrear): Tarea => aTarea(repo.crear(datos)),
     modificar(id: number, cambios: DatosModificar): Tarea {

@@ -8,7 +8,7 @@ info:
 paths:
   /api/tareas:
     get:
-      summary: Listar las tareas (orden de creación)
+      summary: Listar las tareas (primero las vencidas por fecha límite; después el resto por creación)
       responses:
         '200':
           description: Lista de tareas
