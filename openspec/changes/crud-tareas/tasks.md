@@ -2,8 +2,8 @@
 
 ## 1. Base del proyecto
 
-- [ ] 1.1 Migración `001_crear_tareas.sql` y conexión con migrador (verificación: la tabla existe al arrancar con `:memory:`)
-- [ ] 1.2 `crearApp({ bd, hoy })` con manejo de errores 400/404/422 (verificación: `npm run typecheck` sin errores)
+- [x] 1.1 Migración `001_crear_tareas.sql` y conexión con migrador (verificación: la tabla existe al arrancar con `:memory:`)
+- [x] 1.2 `crearApp({ bd, hoy })` con manejo de errores 400/404/422 (verificación: `npm run typecheck` sin errores)
 
 ## 2. Tests de contrato en rojo
 
