@@ -2,14 +2,15 @@
 
 ## Purpose
 
-Gestionar el ciclo de vida de las tareas del equipo de soporte: alta, consulta, modificación de sus datos y de su estado, y baja.
+Gestionar el ciclo de vida de las tareas del equipo de soporte: alta, consulta, modificación de sus datos y de su estado, y baja; con fecha límite opcional y aviso de las tareas vencidas.
 
 ## Requirements
 
 ### Requirement: Crear una tarea
-El sistema SHALL permitir crear una tarea con un título y, opcionalmente, una descripción y un estado inicial.
+El sistema SHALL permitir crear una tarea con un título y, opcionalmente, una descripción, un estado inicial y una fecha límite.
 El título SHALL tener entre 1 y 120 caracteres sin contar los espacios de los extremos. La descripción SHALL tener como máximo 1000 caracteres.
 El estado SHALL ser `pendiente`, `en_curso` o `hecha`; si no se indica, SHALL ser `pendiente`.
+La fecha límite SHALL ser una fecha de calendario válida con formato AAAA-MM-DD; se admiten fechas pasadas.
 
 #### Scenario: [T-CREAR-1] Título válido
 - **WHEN** se crea una tarea con el título "Revisar incidencia 4521"
@@ -26,6 +27,14 @@ El estado SHALL ser `pendiente`, `en_curso` o `hecha`; si no se indica, SHALL se
 #### Scenario: [T-CREAR-4] Estado no válido
 - **WHEN** se crea una tarea con el estado "terminada"
 - **THEN** el sistema responde 422 indicando que `estado` no es un valor permitido
+
+#### Scenario: [T-CREAR-5] Con fecha límite
+- **WHEN** se crea una tarea con la fecha límite 2026-04-15
+- **THEN** el sistema responde 201 con la tarea y su `fechaLimite` 2026-04-15
+
+#### Scenario: [T-CREAR-6] Fecha límite no válida
+- **WHEN** se crea una tarea con la fecha límite "2026-02-30"
+- **THEN** el sistema responde 422 indicando que `fechaLimite` no es una fecha válida y no crea ninguna tarea
 
 ### Requirement: Listar las tareas
 El sistema SHALL devolver todas las tareas en orden de creación, de la más antigua a la más reciente.
@@ -50,7 +59,7 @@ El sistema SHALL devolver una tarea a partir de su identificador.
 - **THEN** el sistema responde 404
 
 ### Requirement: Modificar una tarea
-El sistema SHALL permitir modificar el título, la descripción y el estado de una tarea existente, con las mismas reglas que al crearla. Los campos que no se envían SHALL quedar como estaban.
+El sistema SHALL permitir modificar el título, la descripción, el estado y la fecha límite de una tarea existente, con las mismas reglas que al crearla. Los campos que no se envían SHALL quedar como estaban. Enviar la fecha límite vacía (`null`) SHALL quitarla.
 
 #### Scenario: [T-EDITAR-1] Cambio de estado
 - **WHEN** se modifica el estado de una tarea `pendiente` a `en_curso`
@@ -63,6 +72,10 @@ El sistema SHALL permitir modificar el título, la descripción y el estado de u
 #### Scenario: [T-EDITAR-3] Datos no válidos
 - **WHEN** se modifica una tarea dejando el título vacío
 - **THEN** el sistema responde 422 y la tarea no cambia
+
+#### Scenario: [T-EDITAR-4] Quitar la fecha límite
+- **WHEN** se modifica una tarea con fecha límite enviando la fecha límite vacía
+- **THEN** el sistema responde 200 con la tarea sin fecha límite
 
 ### Requirement: Borrar una tarea
 El sistema SHALL permitir borrar una tarea existente de forma definitiva.
@@ -81,3 +94,25 @@ El sistema SHALL responder a los errores con un cuerpo JSON que incluya un mensa
 #### Scenario: [T-ERROR-1] JSON mal formado
 - **WHEN** se crea una tarea enviando un cuerpo que no es JSON válido
 - **THEN** el sistema responde 400 con un mensaje `error`
+
+### Requirement: Tarea vencida
+El sistema SHALL indicar en cada tarea si está vencida.
+Una tarea SHALL estar vencida cuando su fecha límite se haya alcanzado y su estado no sea `hecha`.
+Una tarea sin fecha límite SHALL NOT estar vencida nunca.
+«Hoy» SHALL calcularse en la zona horaria configurada para la oficina.
+
+#### Scenario: [T-VENC-1] Fecha pasada y tarea pendiente
+- **WHEN** hoy es 2026-03-10 y se consulta una tarea `pendiente` con fecha límite 2026-03-09
+- **THEN** la tarea aparece como vencida
+
+#### Scenario: [T-VENC-2] Fecha pasada pero tarea hecha
+- **WHEN** hoy es 2026-03-10 y se consulta una tarea `hecha` con fecha límite 2026-03-09
+- **THEN** la tarea no aparece como vencida
+
+#### Scenario: [T-VENC-3] Sin fecha límite
+- **WHEN** se consulta una tarea sin fecha límite
+- **THEN** la tarea no aparece como vencida
+
+#### Scenario: [T-VENC-4] Fecha futura
+- **WHEN** hoy es 2026-03-10 y se consulta una tarea `pendiente` con fecha límite 2026-03-11
+- **THEN** la tarea no aparece como vencida
