@@ -4,7 +4,7 @@
 |---|---|
 | Entrega revisada | v0.2.0 — change `add-fecha-limite` |
 | Revisado por | Laura Gómez (cliente) en la demo del 2026-03-16 |
-| Resultado | **RECHAZADA** |
+| Resultado | **RECHAZADA** → corregida y aceptada en v0.3.0 (`ACEPTACION-002.md`) |
 
 ## Lo que dijo el cliente
 

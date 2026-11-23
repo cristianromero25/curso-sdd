@@ -4,7 +4,7 @@
 |---|---|
 | Solicitante | Laura Gómez (coordinadora de soporte, Distribuciones Norte) |
 | Fecha de entrada | 2026-03-02 |
-| Estado | Entregado en v0.2.0 (change `add-fecha-limite`) · pendiente de aceptación del cliente |
+| Estado | **Aceptado** en v0.3.0 tras el rechazo REV-002 (ver `docs/revisiones/ACEPTACION-002.md`) |
 
 ## Petición original
 

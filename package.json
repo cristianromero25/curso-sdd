@@ -1,6 +1,6 @@
 {
   "name": "tareas-app",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
   "description": "Gestor de tareas: proyecto de práctica del curso «SDD en la práctica»",
