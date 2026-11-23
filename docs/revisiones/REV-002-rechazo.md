@@ -29,7 +29,7 @@
 **Lección para el proceso:** todo `[SUPUESTO]` de un requerimiento se confirma con el cliente **antes** de `/openspec-propose`, o se escribe como scenario explícito para que el cliente lo lea en la revisión.
 
 ## Plan
-1. Reproducir el punto 1 con un test en rojo (`[T-VENC-5]`, fecha límite = hoy).
-2. Change `fix-vencida-mismo-dia` → apply → archive → v0.2.1.
+1. Change `fix-vencida-mismo-dia`: primero el delta con el scenario que faltaba (`[T-VENC-5]`, fecha límite = hoy).
+2. Reproducir el rechazo con el test de `[T-VENC-5]` **en rojo** → arreglo → verde → archive → v0.2.1.
 3. Change `change-orden-vencidas-primero` → apply → archive → v0.3.0.
 4. Demo con el cliente sobre los mismos datos de la evidencia → acta `ACEPTACION-002.md`.
