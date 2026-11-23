@@ -2,7 +2,7 @@
 
 ## 1. Test en rojo
 
-- [ ] 1.1 Test de contrato `[T-LISTAR-3]` (verificación: falla con el orden actual)
+- [x] 1.1 Test de contrato `[T-LISTAR-3]` (verificación: falla con el orden actual)
 
 ## 2. Implementación
 

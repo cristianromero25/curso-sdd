@@ -40,6 +40,19 @@ describe('Requirement: Modificar una tarea (fecha límite)', () => {
   });
 });
 
+describe('Requirement: Listar las tareas (orden)', () => {
+  // REV-002 punto 2: las vencidas, arriba y las más atrasadas primero.
+  it('[T-LISTAR-3] vencidas primero por fecha límite, después el resto por creación', async () => {
+    await crear({ titulo: 'A' });
+    await crear({ titulo: 'B', fechaLimite: '2026-03-08' });
+    await crear({ titulo: 'C', fechaLimite: '2026-03-05' });
+    await crear({ titulo: 'D', fechaLimite: '2026-03-20' });
+    const res = await api.get('/api/tareas');
+    expect(res.status).toBe(200);
+    expect(res.body.map((t: { titulo: string }) => t.titulo)).toEqual(['C', 'B', 'A', 'D']);
+  });
+});
+
 describe('Requirement: Tarea vencida', () => {
   it('[T-VENC-1] fecha pasada y pendiente → vencida', async () => {
     const { body } = await crear({ titulo: 'Atrasada', fechaLimite: '2026-03-09' });
