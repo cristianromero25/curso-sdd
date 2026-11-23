@@ -2,7 +2,7 @@
 
 ## 1. Tests en rojo
 
-- [ ] 1.1 Tests de contrato de T-CREAR-5, T-CREAR-6, T-EDITAR-4 y T-VENC-1 a T-VENC-4 (verificación: fallan porque falta `fechaLimite`/`vencida`)
+- [x] 1.1 Tests de contrato de T-CREAR-5, T-CREAR-6, T-EDITAR-4 y T-VENC-1 a T-VENC-4 (verificación: fallan porque falta `fechaLimite`/`vencida`)
 
 ## 2. Datos y validación
 
